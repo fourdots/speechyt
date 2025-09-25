@@ -1,0 +1,22 @@
+# Speech-to-text keybindings example
+# Copy this to ~/.xbindkeysrc and modify as needed
+
+# Backtick key (`) - double-tap to start, double-tap to stop
+"/home/sho/speechyt/double_tap_handler.sh"
+    m:0x0 + c:49
+    grave
+
+# Mouse button 4 (side button) - double-tap to start, double-tap to stop
+"/home/sho/speechyt/double_tap_handler.sh"
+    m:0x0 + b:8
+    button8
+
+# Alternative: F8 key instead of backtick
+# "/home/sho/speechyt/double_tap_handler.sh"
+#     m:0x0 + c:74
+#     F8
+
+# Alternative: Menu key (context menu key)
+# "/home/sho/speechyt/double_tap_handler.sh"
+#     m:0x0 + c:135
+#     Menu

@@ -1,0 +1,44 @@
+# Temporary files
+tmp/
+*.tmp
+*.lock
+last_tap_time
+
+# Audio files
+*.wav
+*.mp3
+*.m4a
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env_sandbox/
+
+# Transcription output
+*.txt
+recording.txt
+
+# System files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Logs
+*.log
+
+# Backup files
+*.backup
+*.bak
