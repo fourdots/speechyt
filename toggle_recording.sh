@@ -21,9 +21,9 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
         
         # Check if recording file exists and has content
         if [ -f "$HOME/s2t/tmp/recording.wav" ]; then
-            # Transcribe audio - FORCE ENGLISH LANGUAGE AND USE BASE MODEL (fastest)
+            # Transcribe audio - FORCE ENGLISH LANGUAGE AND USE TINY MODEL (ultra-fast)
             source $HOME/env_sandbox/bin/activate
-            whisper $HOME/s2t/tmp/recording.wav --model base --language en --output_dir="${HOME}/s2t/tmp/" --output_format="txt" 2>/dev/null
+            whisper $HOME/s2t/tmp/recording.wav --model tiny --language en --output_dir="${HOME}/s2t/tmp/" --output_format="txt" 2>/dev/null
             deactivate
             
             # Temporary file for transcription
