@@ -85,14 +85,14 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
                 xclip -selection clipboard < $TRANSCRIPTION_FILE
                 
                 # Notify completion
-                notify-send "✅ Transcription Complete" "Text copied to clipboard - pasting now..." -t 1500
+                notify-send "✅ Transcription Complete" "Text pasted!" -t 1000
                 
-                # Wait for notification to appear and clipboard to settle
-                sleep 0.5
+                # Minimal delay for clipboard to settle (GPU is fast!)
+                sleep 0.1
                 
                 # Restore focus to the original window
                 xdotool windowactivate --sync $ACTIVE_WINDOW
-                sleep 0.3
+                sleep 0.05
                 
                 # Simulate the paste action (send system-level Ctrl+V, not physical Alt+V)
                 # Since xmodmap remaps physical Alt to system Ctrl, xdotool needs ctrl+v
