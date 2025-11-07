@@ -1,19 +1,21 @@
-# SpeechyT 🎤 - Advanced Linux Speech-to-Text System
+# SpeechyT 🎤 - Fast, Private Speech-to-Text for Linux
 
-**Transform your speech into text instantly on Linux using OpenAI's Whisper - completely offline, no API keys required!**
+**Transform your speech into text instantly on Linux using faster-whisper - completely offline, no API keys required!**
 
-SpeechyT is an enhanced fork of the original [s2t project](https://github.com/franchesoni/s2t) with significant improvements including double-tap activation (like Mac's Mr. Flow), mouse button support, multiple model options, and forced English transcription.
+SpeechyT is a production-ready speech-to-text solution with faster-whisper engine (2-4x faster than standard Whisper), custom dictionary support, and seamless auto-paste functionality.
 
 ## ✨ Key Features
 
-- **🎯 Double-tap activation**: Prevents accidental recordings (like Mac Mr. Flow)
-- **🖱️ Mouse & keyboard support**: Use backtick key OR mouse side button
-- **🚀 Ultra-fast transcription**: 2-5 seconds with optimized models
+- **⚡ Blazing Fast**: 1-2 second transcription with faster-whisper (2-4x faster than openai-whisper)
+- **🎯 Three Control Methods**: Mouse button 4, Right Ctrl key, or GUI taskbar button
+- **📚 Custom Dictionary**: 148+ technical terms auto-corrected (add your own!)
+- **📜 Transcription History**: Auto-saves last 20 transcriptions with timestamps
+- **🍎 Mac Keyboard Support**: Works with Mac-style keyboard remapping (Alt=Ctrl)
+- **🪟 Smart Window Focus**: Auto-pastes at cursor even if windows pop up during transcription
 - **🔒 100% Private**: Runs completely offline, no data leaves your computer
-- **🆓 No API keys**: Uses open-source Whisper models
+- **🆓 No API Keys**: Uses open-source Whisper models
 - **📝 Auto-paste**: Transcribed text automatically appears at cursor
-- **🔔 Visual notifications**: Clear feedback for all recording states
-- **🛡️ Crash-proof**: Lock file system prevents multiple recordings
+- **🔔 Visual Notifications**: Clear feedback for all recording states
 
 ## 📋 Prerequisites
 
@@ -65,13 +67,28 @@ xbindkeys
 
 ## 📖 Usage
 
-### Double-Tap System (Like Mac Mr. Flow)
-1. **Double-tap** backtick (`) or mouse button 4
+### Three Ways to Record
+
+**Method 1: Mouse Button 4**
+- Double-tap side button → Start recording
+- Double-tap again → Stop & paste
+
+**Method 2: Right Ctrl Key**
+- Double-tap Right Ctrl → Start recording
+- Double-tap again → Stop & paste
+
+**Method 3: GUI Button (Taskbar)**
+- Click SpeechyT icon → Start recording
+- Click again → Stop & paste
+- Find in app menu: Search "SpeechyT" → Pin to taskbar
+
+### Recording Flow
+1. Trigger recording (any method above)
 2. See **"🎤 Recording Started"** notification
 3. **Speak clearly** in English
-4. **Double-tap** again to stop
-5. See **"⏳ Processing..."** notification
-6. **Text automatically appears** at cursor!
+4. Trigger again to stop
+5. See **"⏳ Processing..."** notification (1-2 seconds)
+6. **Text automatically pastes** at cursor!
 
 ### Visual Feedback
 - 🎤 **Recording Started**: Recording is active
@@ -81,17 +98,52 @@ xbindkeys
 
 ## ⚙️ Configuration Options
 
+### Custom Dictionary
+
+Add technical terms, company names, and custom words:
+
+```bash
+# Edit dictionary
+nano ~/speechyt/dictionary.txt
+
+# Add entries (format: wrong → correct)
+kubernetes → Kubernetes
+postgresql → PostgreSQL
+mycompany → MyCompany
+```
+
+**Import from Wispr Flow (Mac):**
+```bash
+~/speechyt/import-dictionary.sh ~/Downloads/wispr-dictionary.json
+```
+
+Supports: JSON, CSV, TXT formats
+
+### View Transcription History
+
+```bash
+# View recent transcriptions
+~/speechyt/view-history.sh
+
+# Copy specific transcription to clipboard
+~/speechyt/view-history.sh --copy 1
+```
+
+Automatically saves last 20 transcriptions with timestamps.
+
 ### Change Whisper Model
 
-Edit `/home/sho/speechyt/toggle_recording.sh` and change the model:
+Edit `~/speechyt/toggle_recording.sh` line 31 and change the model:
 
 | Model | Size | Speed | Accuracy | Use Case |
 |-------|------|-------|----------|----------|
-| `tiny` | 39MB | ~1-2s | Good | Quick notes |
-| `base` | 74MB | ~2-5s | Better | **Default - balanced** |
-| `small` | 461MB | ~5-10s | Very Good | Longer recordings |
-| `medium` | 1.4GB | ~15-30s | Excellent | Professional use |
-| `large` | 2.9GB | ~30-60s | Best | Maximum accuracy |
+| `tiny.en` | 39MB | ~0.5-1s | Good | Ultra-fast notes |
+| `base.en` | 74MB | ~1-2s | Better | **Default - balanced** |
+| `small.en` | 461MB | ~3-5s | Very Good | Longer recordings |
+| `medium.en` | 1.4GB | ~10-15s | Excellent | Professional use |
+| `large` | 2.9GB | ~20-30s | Best | Maximum accuracy |
+
+**Note:** Using faster-whisper engine (2-4x faster than openai-whisper). `.en` models are optimized for English.
 
 ### Customize Double-Tap Timing
 
@@ -121,6 +173,12 @@ Edit `toggle_recording.sh` and change:
 
 ## 🔧 Troubleshooting
 
+### Quick Fix (Shortcuts Not Working)
+```bash
+~/speechyt/reload-bindings.sh
+```
+This reloads both xmodmap (keyboard remapping) and xbindkeys (mouse buttons).
+
 ### Check if xbindkeys is running
 ```bash
 pgrep -f xbindkeys
@@ -130,6 +188,12 @@ pgrep -f xbindkeys
 ```bash
 killall xbindkeys && xbindkeys
 ```
+
+### GUI Button Not Appearing
+```bash
+update-desktop-database ~/.local/share/applications/
+```
+Then search for "SpeechyT" in app menu.
 
 ### Test recording manually
 ```bash
@@ -149,6 +213,11 @@ rm -f ~/speechyt/recording.lock
 ```bash
 # Run xbindkeys in verbose mode
 xbindkeys -n -v
+```
+
+### See Available Commands
+```bash
+cat ~/speechyt/CHEATSHEET.md
 ```
 
 ## 📁 File Structure
