@@ -84,19 +84,25 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
                 # Copy transcription to clipboard
                 xclip -selection clipboard < $TRANSCRIPTION_FILE
                 
-                # Notify completion
-                notify-send "✅ Transcription Complete" "Text pasted!" -t 1000
-                
-                # Minimal delay for clipboard to settle (GPU is fast!)
-                sleep 0.1
-                
-                # Restore focus to the original window
-                xdotool windowactivate --sync $ACTIVE_WINDOW
-                sleep 0.05
-                
-                # Simulate the paste action (send system-level Ctrl+V, not physical Alt+V)
-                # Since xmodmap remaps physical Alt to system Ctrl, xdotool needs ctrl+v
-                xdotool key --clearmodifiers ctrl+v
+                # Check if auto-paste should be skipped (e.g., from GUI button)
+                if [ "$NO_AUTO_PASTE" = "1" ]; then
+                    # GUI button was used - just notify, don't auto-paste
+                    notify-send "✅ Transcription Complete" "Copied to clipboard! Press Alt+V to paste" -t 2000
+                else
+                    # Mouse/keyboard shortcut - auto-paste as normal
+                    notify-send "✅ Transcription Complete" "Text pasted!" -t 1000
+                    
+                    # Minimal delay for clipboard to settle (GPU is fast!)
+                    sleep 0.1
+                    
+                    # Restore focus to the original window
+                    xdotool windowactivate --sync $ACTIVE_WINDOW
+                    sleep 0.05
+                    
+                    # Simulate the paste action (send system-level Ctrl+V, not physical Alt+V)
+                    # Since xmodmap remaps physical Alt to system Ctrl, xdotool needs ctrl+v
+                    xdotool key --clearmodifiers ctrl+v
+                fi
             else
                 notify-send "⚠️ Transcription Failed" "No text was transcribed"
             fi
