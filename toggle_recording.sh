@@ -112,8 +112,9 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
 else
     # Not recording - START it
     
-    # Clean any old files first
+    # Clean any old files first and create fresh tmp directory
     rm -rf $HOME/speechyt/tmp
+    mkdir -p $HOME/speechyt/tmp/
     
     # IMPORTANT: Save the currently active window ID NOW (before notifications change focus)
     ACTIVE_WINDOW=$(xdotool getactivewindow 2>/dev/null)
@@ -124,9 +125,6 @@ else
     
     # Show notification
     notify-send "🎤 Recording Started" "Double-tap mouse button 4 to stop" -t 2000
-    
-    # Create temporary directory
-    mkdir -p $HOME/speechyt/tmp/
     
     # Start recording with ffmpeg (in background)
     ffmpeg -f alsa -i default -ar 44100 -ac 2 $HOME/speechyt/tmp/recording.wav &
