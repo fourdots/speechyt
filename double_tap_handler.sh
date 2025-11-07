@@ -22,7 +22,7 @@ if [ -f "$TAPFILE" ]; then
         rm -f "$TAPFILE"  # Clear the tap file
         
         # Call the actual toggle script
-        /home/sho/speechyt/toggle_recording.sh
+        /home/sho/Documents/dev-projects/speechyt/toggle_recording.sh
         exit 0
     fi
 fi
