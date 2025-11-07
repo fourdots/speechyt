@@ -57,6 +57,15 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
                     done < "$HOME/speechyt/dictionary.txt"
                 fi
                 
+                # Save to history (last 20 transcriptions)
+                HISTORY_DIR="$HOME/speechyt/history"
+                mkdir -p "$HISTORY_DIR"
+                TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+                cp "$TRANSCRIPTION_FILE" "$HISTORY_DIR/${TIMESTAMP}.txt"
+                
+                # Keep only last 20 files
+                ls -t "$HISTORY_DIR"/*.txt 2>/dev/null | tail -n +21 | xargs -r rm
+                
                 # Copy transcription to clipboard
                 xclip -selection clipboard < $TRANSCRIPTION_FILE
                 
