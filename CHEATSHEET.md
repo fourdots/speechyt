@@ -116,7 +116,13 @@ deactivate
 ## 🆘 Emergency Reset
 
 ```bash
-# Nuclear option - full cleanup
+# Quick reset (use this first!)
+~/speechyt/reset-speechyt.sh    # Fixes all state issues
+
+# Reload keyboard shortcuts
+~/speechyt/reload-bindings.sh   # Reloads xmodmap + xbindkeys
+
+# Manual reset (if scripts don't work)
 killall xbindkeys ffmpeg 2>/dev/null
 rm -f ~/speechyt/recording.lock
 rm -rf ~/speechyt/tmp/
