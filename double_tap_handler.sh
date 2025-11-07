@@ -3,8 +3,8 @@
 # This script handles double-tap detection for speech-to-text
 # Requires double-tap to start AND double-tap to stop recording
 
-TAPFILE="$HOME/s2t/last_tap_time"
-RECORDING_STATE="$HOME/s2t/recording.lock"
+TAPFILE="$HOME/speechyt/last_tap_time"
+RECORDING_STATE="$HOME/speechyt/recording.lock"
 DOUBLE_TAP_THRESHOLD=0.5  # Maximum seconds between taps to count as double-tap
 
 # Get current time in milliseconds
@@ -22,7 +22,7 @@ if [ -f "$TAPFILE" ]; then
         rm -f "$TAPFILE"  # Clear the tap file
         
         # Call the actual toggle script
-        /home/sho/s2t/toggle_recording.sh
+        /home/sho/speechyt/toggle_recording.sh
         exit 0
     fi
 fi

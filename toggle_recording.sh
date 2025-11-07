@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Lock file to track recording state
-LOCKFILE="$HOME/s2t/recording.lock"
-PID_FILE="$HOME/s2t/tmp/recording_pid"
+LOCKFILE="$HOME/speechyt/recording.lock"
+PID_FILE="$HOME/speechyt/tmp/recording_pid"
 
 # Check if currently recording
 if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
@@ -20,16 +20,38 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
         notify-send "⏳ Processing..." "Transcribing your speech to text" -t 2000
         
         # Check if recording file exists and has content
-        if [ -f "$HOME/s2t/tmp/recording.wav" ]; then
-            # Transcribe audio - FORCE ENGLISH LANGUAGE AND USE TINY MODEL (ultra-fast)
+        if [ -f "$HOME/speechyt/tmp/recording.wav" ]; then
+            # Transcribe audio - FORCE ENGLISH LANGUAGE AND USE FASTER-WHISPER (2-4x faster!)
             source $HOME/env_sandbox/bin/activate
-            whisper $HOME/s2t/tmp/recording.wav --model tiny --language en --output_dir="${HOME}/s2t/tmp/" --output_format="txt" 2>/dev/null
+            
+            # Initial prompt helps Whisper recognize technical terms
+            INITIAL_PROMPT="Technical terms: SpeechyT, Fantom, OctoBrowser, Laravel, Puppeteer, Evomi, DataImpulse, faster-whisper"
+            
+            # Using faster-whisper CLI with base.en model (optimized for English)
+            whisper --model base.en --language en --initial_prompt "$INITIAL_PROMPT" --output_dir "${HOME}/speechyt/tmp/" --output_format txt "$HOME/speechyt/tmp/recording.wav" 2>/dev/null
             deactivate
             
             # Temporary file for transcription
-            TRANSCRIPTION_FILE="$HOME/s2t/tmp/recording.txt"
+            TRANSCRIPTION_FILE="$HOME/speechyt/tmp/recording.txt"
             
             if [ -f "$TRANSCRIPTION_FILE" ]; then
+                # Apply custom dictionary replacements (if dictionary exists)
+                if [ -f "$HOME/speechyt/dictionary.txt" ]; then
+                    # Read dictionary and apply replacements
+                    while IFS='→' read -r wrong correct; do
+                        # Skip comments and empty lines
+                        [[ "$wrong" =~ ^#.*$ ]] && continue
+                        [[ -z "$wrong" ]] && continue
+                        
+                        # Trim whitespace
+                        wrong=$(echo "$wrong" | xargs)
+                        correct=$(echo "$correct" | xargs)
+                        
+                        # Apply case-insensitive replacement
+                        sed -i "s/\b${wrong}\b/${correct}/gI" "$TRANSCRIPTION_FILE"
+                    done < "$HOME/speechyt/dictionary.txt"
+                fi
+                
                 # Copy transcription to clipboard
                 xclip -selection clipboard < $TRANSCRIPTION_FILE
                 
@@ -49,21 +71,21 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
         fi
         
         # Clean up
-        rm -rf $HOME/s2t/tmp/
+        rm -rf $HOME/speechyt/tmp/
         rm -f "$LOCKFILE"
     fi
 else
     # Not recording - START it
     
     # Clean any old files first
-    rm -rf $HOME/s2t/tmp
-    mkdir -p $HOME/s2t/tmp
+    rm -rf $HOME/speechyt/tmp
+    mkdir -p $HOME/speechyt/tmp
     
     # Show notification that recording has started
-    notify-send "🎤 Recording Started" "Double-tap backtick or mouse button to stop" -t 2000
+    notify-send "🎤 Recording Started" "Double-tap mouse button 4 to stop" -t 2000
     
     # Start recording audio in background
-    AUDIO_FILE="$HOME/s2t/tmp/recording.wav"
+    AUDIO_FILE="$HOME/speechyt/tmp/recording.wav"
     ffmpeg -f alsa -i default -ar 44100 -ac 2 "$AUDIO_FILE" > /dev/null 2>&1 &
     FFMPEG_PID=$!
     
