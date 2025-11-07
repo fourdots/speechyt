@@ -1,6 +1,7 @@
 # 🚀 SpeechyT Quick Commands Cheatsheet
 
 ## 🎤 Recording Control
+
 ```bash
 # Manual test (bypass mouse button)
 bash ~/speechyt/toggle_recording.sh
@@ -10,6 +11,8 @@ pkill -9 ffmpeg
 rm -f ~/speechyt/recording.lock ~/speechyt/tmp/*
 
 # Restart xbindkeys (mouse button not working)
+~/speechyt/reload-bindings.sh
+
 killall xbindkeys && xbindkeys
 
 # Check if recording active
@@ -17,6 +20,7 @@ ps aux | grep ffmpeg | grep recording
 ```
 
 ## 📚 Dictionary Management
+
 ```bash
 # View dictionary
 ~/speechyt/view-dictionary.sh
@@ -34,6 +38,7 @@ echo "myterm → MyTerm" >> ~/speechyt/dictionary.txt
 ```
 
 ## 📜 History
+
 ```bash
 # View transcription history
 ~/speechyt/view-history.sh
@@ -46,6 +51,7 @@ rm ~/speechyt/history/*.txt
 ```
 
 ## 🔧 Troubleshooting
+
 ```bash
 # Full restart
 killall xbindkeys ffmpeg 2>/dev/null
@@ -66,6 +72,7 @@ tail -50 ~/.xsession-errors | grep -i speech
 ```
 
 ## 🎯 Model Management
+
 ```bash
 # Change model (edit toggle_recording.sh line 31)
 nano ~/speechyt/toggle_recording.sh
@@ -79,6 +86,7 @@ nano ~/speechyt/toggle_recording.sh
 ```
 
 ## 🔍 Debug & Analysis
+
 ```bash
 # Check file sizes
 du -sh ~/speechyt/tmp/*
@@ -94,6 +102,7 @@ watch -n 1 'ps aux | grep ffmpeg; ls -lh ~/speechyt/tmp/ 2>/dev/null'
 ```
 
 ## 📊 Performance
+
 ```bash
 # List downloaded models
 ls -lh ~/.cache/whisper/
@@ -105,6 +114,7 @@ deactivate
 ```
 
 ## 🆘 Emergency Reset
+
 ```bash
 # Nuclear option - full cleanup
 killall xbindkeys ffmpeg 2>/dev/null
@@ -116,6 +126,7 @@ echo "✅ Reset complete - try recording now"
 ```
 
 ## 📁 File Locations
+
 ```
 ~/speechyt/toggle_recording.sh     # Main script
 ~/speechyt/double_tap_handler.sh   # Mouse trigger
@@ -126,6 +137,7 @@ echo "✅ Reset complete - try recording now"
 ```
 
 ## ⚡ Quick Fixes
+
 ```bash
 # Recording won't start → Restart xbindkeys
 killall xbindkeys && xbindkeys

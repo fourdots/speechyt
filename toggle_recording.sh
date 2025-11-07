@@ -25,7 +25,7 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
             source $HOME/env_sandbox/bin/activate
             
             # Initial prompt helps Whisper recognize technical terms
-            INITIAL_PROMPT="Technical terms: SpeechyT, Fantom, OctoBrowser, Laravel, Puppeteer, Evomi, DataImpulse, faster-whisper"
+            INITIAL_PROMPT="Technical terms: SpeechyT, Fantom, fantomWorks, OctoBrowser, Supabase, ScrapingBee, AdsPower, FireSearch, Windsurf, OpenMemory, Crawl4AI, Pinecone, BullMQ, Claude, OpenAI, OAuth, AHREFS, Cline, Radomir Basta, Four Dots, fourdots.com"
             
             # Using faster-whisper CLI with base.en model (optimized for English)
             whisper --model base.en --language en --initial_prompt "$INITIAL_PROMPT" --output_dir "${HOME}/speechyt/tmp/" --output_format txt "$HOME/speechyt/tmp/recording.wav" 2>/dev/null
@@ -66,17 +66,25 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
                 # Keep only last 20 files
                 ls -t "$HISTORY_DIR"/*.txt 2>/dev/null | tail -n +21 | xargs -r rm
                 
+                # Get the currently active window ID BEFORE showing notification
+                ACTIVE_WINDOW=$(xdotool getactivewindow)
+                
                 # Copy transcription to clipboard
                 xclip -selection clipboard < $TRANSCRIPTION_FILE
                 
                 # Notify completion
-                notify-send "✅ Transcription Complete" "Text has been pasted at cursor location"
+                notify-send "✅ Transcription Complete" "Text copied to clipboard - pasting now..." -t 1500
                 
-                # Ensure the clipboard has time to update
-                sleep 0.1
+                # Wait for notification to appear and clipboard to settle
+                sleep 0.5
                 
-                # Simulate the paste action
-                xdotool key ctrl+v
+                # Restore focus to the original window
+                xdotool windowactivate --sync $ACTIVE_WINDOW
+                sleep 0.3
+                
+                # Simulate the paste action (send system-level Ctrl+V, not physical Alt+V)
+                # Since xmodmap remaps physical Alt to system Ctrl, xdotool needs ctrl+v
+                xdotool key --clearmodifiers ctrl+v
             else
                 notify-send "⚠️ Transcription Failed" "No text was transcribed"
             fi
