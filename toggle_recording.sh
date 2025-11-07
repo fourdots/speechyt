@@ -43,12 +43,17 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
                         [[ "$wrong" =~ ^#.*$ ]] && continue
                         [[ -z "$wrong" ]] && continue
                         
-                        # Trim whitespace
-                        wrong=$(echo "$wrong" | xargs)
-                        correct=$(echo "$correct" | xargs)
+                        # Trim whitespace (without xargs to avoid quote issues)
+                        wrong="${wrong#"${wrong%%[![:space:]]*}"}"
+                        wrong="${wrong%"${wrong##*[![:space:]]}"}"
+                        correct="${correct#"${correct%%[![:space:]]*}"}"
+                        correct="${correct%"${correct##*[![:space:]]}"}"
+                        
+                        # Skip if empty after trimming
+                        [[ -z "$wrong" ]] || [[ -z "$correct" ]] && continue
                         
                         # Apply case-insensitive replacement
-                        sed -i "s/\b${wrong}\b/${correct}/gI" "$TRANSCRIPTION_FILE"
+                        sed -i "s/\b${wrong}\b/${correct}/gI" "$TRANSCRIPTION_FILE" 2>/dev/null
                     done < "$HOME/speechyt/dictionary.txt"
                 fi
                 
