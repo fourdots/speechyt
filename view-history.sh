@@ -3,7 +3,7 @@
 # SpeechyT History Viewer
 # View and copy previous transcriptions
 
-HISTORY_DIR="$HOME/speechyt/history"
+HISTORY_DIR="$HOME/Documents/dev-projects/speechyt/history"
 
 mkdir -p "$HISTORY_DIR"
 

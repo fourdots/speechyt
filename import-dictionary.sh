@@ -3,8 +3,8 @@
 # SpeechyT Dictionary Import Tool
 # Imports dictionaries from various formats (Wispr Flow, JSON, CSV, TXT)
 
-DICT_FILE="$HOME/speechyt/dictionary.txt"
-BACKUP_FILE="$HOME/speechyt/dictionary.backup.txt"
+DICT_FILE="$HOME/Documents/dev-projects/speechyt/dictionary.txt"
+BACKUP_FILE="$HOME/Documents/dev-projects/speechyt/dictionary.backup.txt"
 
 echo "📚 SpeechyT Dictionary Import Tool"
 echo "=================================="

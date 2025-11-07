@@ -3,8 +3,8 @@
 # This script handles double-tap detection for speech-to-text
 # Requires double-tap to start AND double-tap to stop recording
 
-TAPFILE="$HOME/speechyt/last_tap_time"
-RECORDING_STATE="$HOME/speechyt/recording.lock"
+TAPFILE="$HOME/Documents/dev-projects/speechyt/last_tap_time"
+RECORDING_STATE="$HOME/Documents/dev-projects/speechyt/recording.lock"
 DOUBLE_TAP_THRESHOLD=0.5  # Maximum seconds between taps to count as double-tap
 
 # Get current time in milliseconds

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Lock file to track recording state
-LOCKFILE="$HOME/speechyt/recording.lock"
-PID_FILE="$HOME/speechyt/tmp/recording_pid"
+LOCKFILE="$HOME/Documents/dev-projects/speechyt/recording.lock"
+PID_FILE="$HOME/Documents/dev-projects/speechyt/tmp/recording_pid"
 
 # Check if currently recording
 if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
@@ -20,7 +20,7 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
         notify-send "⏳ Processing..." "Transcribing your speech to text" -t 2000
         
         # Check if recording file exists and has content
-        if [ -f "$HOME/speechyt/tmp/recording.wav" ]; then
+        if [ -f "$HOME/Documents/dev-projects/speechyt/tmp/recording.wav" ]; then
             # Transcribe audio - FORCE ENGLISH LANGUAGE AND USE FASTER-WHISPER (2-4x faster!)
             source $HOME/env_sandbox/bin/activate
             
@@ -42,23 +42,23 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
             fi
             
             # Using faster-whisper with auto-detected device
-            python3 "${HOME}/speechyt/faster_whisper_cli.py" \
+            python3 "${HOME}/Documents/dev-projects/speechyt/faster_whisper_cli.py" \
                 --model base.en \
                 --language en \
                 --device $DEVICE \
                 --compute_type $COMPUTE_TYPE \
                 --initial_prompt "$INITIAL_PROMPT" \
-                --output_dir "${HOME}/speechyt/tmp/" \
+                --output_dir "${HOME}/Documents/dev-projects/speechyt/tmp/" \
                 --output_format txt \
-                "${HOME}/speechyt/tmp/recording.wav"
+                "${HOME}/Documents/dev-projects/speechyt/tmp/recording.wav"
             deactivate
             
             # Temporary file for transcription
-            TRANSCRIPTION_FILE="$HOME/speechyt/tmp/recording.txt"
+            TRANSCRIPTION_FILE="$HOME/Documents/dev-projects/speechyt/tmp/recording.txt"
             
             if [ -f "$TRANSCRIPTION_FILE" ]; then
                 # Apply custom dictionary replacements (if dictionary exists)
-                if [ -f "$HOME/speechyt/dictionary.txt" ]; then
+                if [ -f "$HOME/Documents/dev-projects/speechyt/dictionary.txt" ]; then
                     # Read dictionary and apply replacements
                     while IFS='→' read -r wrong correct; do
                         # Skip comments and empty lines
@@ -76,11 +76,11 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
                         
                         # Apply case-insensitive replacement
                         sed -i "s/\b${wrong}\b/${correct}/gI" "$TRANSCRIPTION_FILE" 2>/dev/null
-                    done < "$HOME/speechyt/dictionary.txt"
+                    done < "$HOME/Documents/dev-projects/speechyt/dictionary.txt"
                 fi
                 
                 # Save to history (last 20 transcriptions)
-                HISTORY_DIR="$HOME/speechyt/history"
+                HISTORY_DIR="$HOME/Documents/dev-projects/speechyt/history"
                 mkdir -p "$HISTORY_DIR"
                 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
                 cp "$TRANSCRIPTION_FILE" "$HISTORY_DIR/${TIMESTAMP}.txt"
@@ -89,7 +89,7 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
                 ls -t "$HISTORY_DIR"/*.txt 2>/dev/null | tail -n +21 | xargs -r rm
                 
                 # Get the target window ID that was saved when recording started
-                ACTIVE_WINDOW=$(cat "$HOME/speechyt/tmp/target_window_id" 2>/dev/null)
+                ACTIVE_WINDOW=$(cat "$HOME/Documents/dev-projects/speechyt/tmp/target_window_id" 2>/dev/null)
                 
                 # Copy transcription to clipboard
                 xclip -selection clipboard < $TRANSCRIPTION_FILE
@@ -116,19 +116,19 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
         fi
         
         # Clean up
-        rm -rf $HOME/speechyt/tmp/
+        rm -rf $HOME/Documents/dev-projects/speechyt/tmp/
         rm -f "$LOCKFILE"
     fi
 else
     # Not recording - START it
     
     # Clean any old files first and create fresh tmp directory
-    rm -rf $HOME/speechyt/tmp
-    mkdir -p $HOME/speechyt/tmp/
+    rm -rf $HOME/Documents/dev-projects/speechyt/tmp
+    mkdir -p $HOME/Documents/dev-projects/speechyt/tmp/
     
     # IMPORTANT: Save the currently active window ID NOW (before notifications change focus)
     ACTIVE_WINDOW=$(xdotool getactivewindow 2>/dev/null)
-    echo "$ACTIVE_WINDOW" > "$HOME/speechyt/tmp/target_window_id"
+    echo "$ACTIVE_WINDOW" > "$HOME/Documents/dev-projects/speechyt/tmp/target_window_id"
     
     # Create lock file
     echo "$$" > "$LOCKFILE"
@@ -137,7 +137,7 @@ else
     notify-send "🎤 Recording Started" "Double-tap mouse button 4 to stop" -t 2000
     
     # Start recording with ffmpeg (in background)
-    ffmpeg -f alsa -i default -ar 44100 -ac 2 $HOME/speechyt/tmp/recording.wav &
+    ffmpeg -f alsa -i default -ar 44100 -ac 2 $HOME/Documents/dev-projects/speechyt/tmp/recording.wav &
     FFMPEG_PID=$!
     
     # Save the PID

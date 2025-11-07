@@ -58,12 +58,12 @@ fi
 cat > "$HOME_DIR/.xbindkeysrc" << 'EOF'
 # Speech-to-text keybindings
 # Backtick key (`) - double-tap to start, double-tap to stop
-"$HOME/speechyt/double_tap_handler.sh"
+"$HOME/Documents/dev-projects/speechyt/double_tap_handler.sh"
     m:0x0 + c:49
     grave
 
 # Mouse button 4 (side button) - double-tap to start, double-tap to stop
-"$HOME/speechyt/double_tap_handler.sh"
+"$HOME/Documents/dev-projects/speechyt/double_tap_handler.sh"
     m:0x0 + b:8
     button8
 EOF

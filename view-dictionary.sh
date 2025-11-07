@@ -3,7 +3,7 @@
 # SpeechyT Dictionary Viewer
 # Quick view of your current dictionary
 
-DICT_FILE="$HOME/speechyt/dictionary.txt"
+DICT_FILE="$HOME/Documents/dev-projects/speechyt/dictionary.txt"
 
 echo "📚 SpeechyT Dictionary Viewer"
 echo "=============================="
