@@ -24,6 +24,9 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
             # Transcribe audio - FORCE ENGLISH LANGUAGE AND USE FASTER-WHISPER (2-4x faster!)
             source $HOME/env_sandbox/bin/activate
             
+            # Set library path for cuDNN (required for GPU)
+            export LD_LIBRARY_PATH=$HOME/env_sandbox/lib/python3.13/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
+            
             # Initial prompt helps Whisper recognize technical terms
             INITIAL_PROMPT="Technical terms: SpeechyT, Fantom, fantomWorks, OctoBrowser, Supabase, ScrapingBee, AdsPower, FireSearch, Windsurf, OpenMemory, Crawl4AI, Pinecone, BullMQ, Claude, OpenAI, OAuth, AHREFS, Cline, Radomir Basta, Four Dots, fourdots.com"
             
@@ -37,7 +40,7 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
                 --initial_prompt "$INITIAL_PROMPT" \
                 --output_dir "${HOME}/speechyt/tmp/" \
                 --output_format txt \
-                "${HOME}/speechyt/tmp/recording.wav" 2>/dev/null
+                "${HOME}/speechyt/tmp/recording.wav"
             deactivate
             
             # Temporary file for transcription
