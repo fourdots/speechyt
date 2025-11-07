@@ -78,29 +78,24 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
                 # Keep only last 20 files
                 ls -t "$HISTORY_DIR"/*.txt 2>/dev/null | tail -n +21 | xargs -r rm
                 
-                # Get the currently active window ID BEFORE showing notification
-                ACTIVE_WINDOW=$(xdotool getactivewindow)
+                # Get the target window ID that was saved when recording started
+                ACTIVE_WINDOW=$(cat "$HOME/speechyt/tmp/target_window_id" 2>/dev/null)
                 
                 # Copy transcription to clipboard
                 xclip -selection clipboard < $TRANSCRIPTION_FILE
                 
-                # Check if auto-paste should be skipped (e.g., from GUI button)
-                if [ "$NO_AUTO_PASTE" = "1" ]; then
-                    # GUI button was used - just notify, don't auto-paste
-                    notify-send "✅ Transcription Complete" "Copied to clipboard! Press Alt+V to paste" -t 2000
-                else
-                    # Mouse/keyboard shortcut - auto-paste as normal
-                    notify-send "✅ Transcription Complete" "Text pasted!" -t 1000
-                    
-                    # Minimal delay for clipboard to settle (GPU is fast!)
-                    sleep 0.1
-                    
-                    # Restore focus to the original window
-                    xdotool windowactivate --sync $ACTIVE_WINDOW
+                # Notify completion
+                notify-send "✅ Transcription Complete" "Text pasted!" -t 1000
+                
+                # Minimal delay for clipboard to settle (GPU is fast!)
+                sleep 0.1
+                
+                # Restore focus to the original window (saved when recording started)
+                if [ ! -z "$ACTIVE_WINDOW" ]; then
+                    xdotool windowactivate --sync $ACTIVE_WINDOW 2>/dev/null
                     sleep 0.05
                     
-                    # Simulate the paste action (send system-level Ctrl+V, not physical Alt+V)
-                    # Since xmodmap remaps physical Alt to system Ctrl, xdotool needs ctrl+v
+                    # Simulate the paste action
                     xdotool key --clearmodifiers ctrl+v
                 fi
             else
@@ -119,19 +114,24 @@ else
     
     # Clean any old files first
     rm -rf $HOME/speechyt/tmp
-    mkdir -p $HOME/speechyt/tmp
     
-    # Show notification that recording has started
+    # IMPORTANT: Save the currently active window ID NOW (before notifications change focus)
+    ACTIVE_WINDOW=$(xdotool getactivewindow 2>/dev/null)
+    echo "$ACTIVE_WINDOW" > "$HOME/speechyt/tmp/target_window_id"
+    
+    # Create lock file
+    echo "$$" > "$LOCKFILE"
+    
+    # Show notification
     notify-send "🎤 Recording Started" "Double-tap mouse button 4 to stop" -t 2000
     
-    # Start recording audio in background
-    AUDIO_FILE="$HOME/speechyt/tmp/recording.wav"
-    ffmpeg -f alsa -i default -ar 44100 -ac 2 "$AUDIO_FILE" > /dev/null 2>&1 &
+    # Create temporary directory
+    mkdir -p $HOME/speechyt/tmp/
+    
+    # Start recording with ffmpeg (in background)
+    ffmpeg -f alsa -i default -ar 44100 -ac 2 $HOME/speechyt/tmp/recording.wav &
     FFMPEG_PID=$!
     
     # Save the PID
     echo $FFMPEG_PID > "$PID_FILE"
-    
-    # Create lock file
-    echo $FFMPEG_PID > "$LOCKFILE"
 fi
