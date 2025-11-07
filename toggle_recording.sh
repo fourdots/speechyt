@@ -30,13 +30,23 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
             # Initial prompt helps Whisper recognize technical terms
             INITIAL_PROMPT="Technical terms: SpeechyT, Fantom, fantomWorks, OctoBrowser, Supabase, ScrapingBee, AdsPower, FireSearch, Windsurf, OpenMemory, Crawl4AI, Pinecone, BullMQ, Claude, OpenAI, OAuth, AHREFS, Cline, Radomir Basta, Four Dots, fourdots.com"
             
-            # Using faster-whisper with GPU acceleration (5-10x faster!)
-            # Custom Python CLI with device=cuda and compute_type=float16 for RTX GPUs
+            # Auto-detect GPU availability
+            if command -v nvidia-smi &> /dev/null && nvidia-smi &> /dev/null; then
+                # GPU available - use it! (5-10x faster)
+                DEVICE="cuda"
+                COMPUTE_TYPE="float16"
+            else
+                # No GPU - use CPU
+                DEVICE="cpu"
+                COMPUTE_TYPE="int8"
+            fi
+            
+            # Using faster-whisper with auto-detected device
             python3 "${HOME}/speechyt/faster_whisper_cli.py" \
                 --model base.en \
                 --language en \
-                --device cuda \
-                --compute_type float16 \
+                --device $DEVICE \
+                --compute_type $COMPUTE_TYPE \
                 --initial_prompt "$INITIAL_PROMPT" \
                 --output_dir "${HOME}/speechyt/tmp/" \
                 --output_format txt \
