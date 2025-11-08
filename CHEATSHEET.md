@@ -1,18 +1,36 @@
 # 🚀 SpeechyT Quick Commands Cheatsheet
 
+🆘 Emergency Reset
+
+```bash
+# Quick reset (use this first!)
+./reset-speechyt.sh    # Fixes all state issues
+
+# Reload keyboard shortcuts
+./reload-bindings.sh   # Reloads xmodmap + xbindkeys
+
+# Manual reset (if scripts don't work)
+killall xbindkeys ffmpeg 2>/dev/null
+rm -f ~/speechyt/recording.lock
+rm -rf ~/speechyt/tmp/
+mkdir -p ~/speechyt/tmp/
+xbindkeys
+echo "✅ Reset complete - try recording now"##
+```
+
 ## 🎤 Recording Control
 
 ```bash
 # Manual test (bypass mouse button)
-bash ~/speechyt/toggle_recording.sh
+cd /home/sho/Documents/dev-projects/speechyt && bash ./toggle_recording.sh
 
 # Kill stuck recording
 pkill -9 ffmpeg
-rm -f ~/speechyt/recording.lock ~/speechyt/tmp/*
+rm -f /home/sho/Documents/dev-projects/speechyt/recording.lock /home/sho/Documents/dev-projects/speechyt/tmp/*
 
 # Restart xbindkeys (mouse button not working)
-~/speechyt/reload-bindings.sh
-
+cd /home/sho/Documents/dev-projects/speechyt && bash ./reload-bindings.sh
+# OR
 killall xbindkeys && xbindkeys
 
 # Check if recording active
@@ -23,31 +41,31 @@ ps aux | grep ffmpeg | grep recording
 
 ```bash
 # View dictionary
-~/speechyt/view-dictionary.sh
-~/speechyt/view-dictionary.sh --all
-~/speechyt/view-dictionary.sh --search "term"
+cd /home/sho/Documents/dev-projects/speechyt && bash ./view-dictionary.sh
+cd /home/sho/Documents/dev-projects/speechyt && bash ./view-dictionary.sh --all
+cd /home/sho/Documents/dev-projects/speechyt && bash ./view-dictionary.sh --search "term"
 
 # Edit dictionary
-nano ~/speechyt/dictionary.txt
+nano /home/sho/Documents/dev-projects/speechyt/dictionary.txt
 
 # Import dictionary
-~/speechyt/import-dictionary.sh ~/Downloads/dict.json
+cd /home/sho/Documents/dev-projects/speechyt && bash ./import-dictionary.sh ~/Downloads/dict.json
 
 # Add single term (quick)
-echo "myterm → MyTerm" >> ~/speechyt/dictionary.txt
+echo "myterm → MyTerm" >> /home/sho/Documents/dev-projects/speechyt/dictionary.txt
 ```
 
 ## 📜 History
 
 ```bash
 # View transcription history
-~/speechyt/view-history.sh
+cd /home/sho/Documents/dev-projects/speechyt && bash ./view-history.sh
 
 # Copy specific transcription to clipboard
-~/speechyt/view-history.sh --copy 5
+cd /home/sho/Documents/dev-projects/speechyt && bash ./view-history.sh --copy 5
 
 # Clear old history
-rm ~/speechyt/history/*.txt
+rm /home/sho/Documents/dev-projects/speechyt/history/*.txt
 ```
 
 ## 🔧 Troubleshooting
@@ -55,17 +73,17 @@ rm ~/speechyt/history/*.txt
 ```bash
 # Full restart
 killall xbindkeys ffmpeg 2>/dev/null
-rm -f ~/speechyt/recording.lock ~/speechyt/tmp/*
+rm -f /home/sho/Documents/dev-projects/speechyt/recording.lock /home/sho/Documents/dev-projects/speechyt/tmp/*
 xbindkeys
 
 # Check status
 pgrep xbindkeys    # Should return PID
-ls ~/speechyt/tmp/ # Should be empty if not recording
+ls /home/sho/Documents/dev-projects/speechyt/tmp/ # Should be empty if not recording
 
 # Test recording manually
-bash ~/speechyt/toggle_recording.sh  # Start
+cd /home/sho/Documents/dev-projects/speechyt && bash ./toggle_recording.sh  # Start
 # Speak...
-bash ~/speechyt/toggle_recording.sh  # Stop
+cd /home/sho/Documents/dev-projects/speechyt && bash ./toggle_recording.sh  # Stop
 
 # View errors
 tail -50 ~/.xsession-errors | grep -i speech
@@ -74,8 +92,8 @@ tail -50 ~/.xsession-errors | grep -i speech
 ## 🎯 Model Management
 
 ```bash
-# Change model (edit toggle_recording.sh line 31)
-nano ~/speechyt/toggle_recording.sh
+# Change model (edit toggle_recording.sh line 46)
+nano /home/sho/Documents/dev-projects/speechyt/toggle_recording.sh
 # Change: --model base.en
 
 # Available models:
@@ -89,16 +107,16 @@ nano ~/speechyt/toggle_recording.sh
 
 ```bash
 # Check file sizes
-du -sh ~/speechyt/tmp/*
+du -sh /home/sho/Documents/dev-projects/speechyt/tmp/*
 ls -lh ~/.cache/whisper/  # Models
 
 # Test whisper directly
-source ~/env_sandbox/bin/activate
-whisper ~/speechyt/tmp/recording.wav --model base.en --language en
+source /home/sho/env_sandbox/bin/activate
+whisper /home/sho/Documents/dev-projects/speechyt/tmp/recording.wav --model base.en --language en
 deactivate
 
 # Monitor live
-watch -n 1 'ps aux | grep ffmpeg; ls -lh ~/speechyt/tmp/ 2>/dev/null'
+watch -n 1 'ps aux | grep ffmpeg; ls -lh /home/sho/Documents/dev-projects/speechyt/tmp/ 2>/dev/null'
 ```
 
 ## 📊 Performance
@@ -108,38 +126,31 @@ watch -n 1 'ps aux | grep ffmpeg; ls -lh ~/speechyt/tmp/ 2>/dev/null'
 ls -lh ~/.cache/whisper/
 
 # Download model manually
-source ~/env_sandbox/bin/activate
+source /home/sho/env_sandbox/bin/activate
 whisper --model small.en --help  # Downloads on first use
 deactivate
-```
-
-## 🆘 Emergency Reset
-
-```bash
-# Quick reset (use this first!)
-~/speechyt/reset-speechyt.sh    # Fixes all state issues
-
-# Reload keyboard shortcuts
-~/speechyt/reload-bindings.sh   # Reloads xmodmap + xbindkeys
-
-# Manual reset (if scripts don't work)
-killall xbindkeys ffmpeg 2>/dev/null
-rm -f ~/speechyt/recording.lock
-rm -rf ~/speechyt/tmp/
-mkdir -p ~/speechyt/tmp/
-xbindkeys
-echo "✅ Reset complete - try recording now"
 ```
 
 ## 📁 File Locations
 
 ```
-~/speechyt/toggle_recording.sh     # Main script
-~/speechyt/double_tap_handler.sh   # Mouse trigger
-~/speechyt/dictionary.txt          # Custom words
-~/speechyt/history/               # Transcription history
+# Main SpeechyT directory (NEW location)
+/home/sho/Documents/dev-projects/speechyt/
+
+# Key files:
+/home/sho/Documents/dev-projects/speechyt/toggle_recording.sh     # Main script
+/home/sho/Documents/dev-projects/speechyt/double_tap_handler.sh   # Mouse trigger
+/home/sho/Documents/dev-projects/speechyt/dictionary.txt          # Custom words
+/home/sho/Documents/dev-projects/speechyt/history/                # Transcription history
+
+# Utility scripts:
+/home/sho/Documents/dev-projects/speechyt/reload-bindings.sh     # Reload xbindkeys
+/home/sho/Documents/dev-projects/speechyt/reset-speechyt.sh      # Reset everything
+
+# System configs:
 ~/.xbindkeysrc                    # Mouse button config
 ~/.cache/whisper/                 # AI models
+/home/sho/env_sandbox/            # Python environment
 ```
 
 ## ⚡ Quick Fixes
@@ -147,13 +158,18 @@ echo "✅ Reset complete - try recording now"
 ```bash
 # Recording won't start → Restart xbindkeys
 killall xbindkeys && xbindkeys
+# OR
+cd /home/sho/Documents/dev-projects/speechyt && bash ./reload-bindings.sh
 
 # Stuck recording → Kill ffmpeg
-pkill -9 ffmpeg && rm -f ~/speechyt/recording.lock
+pkill -9 ffmpeg && rm -f /home/sho/Documents/dev-projects/speechyt/recording.lock
 
 # Not pasting text → Check clipboard
 xclip -selection clipboard -o
 
 # Slow transcription → Use tiny.en model
-nano ~/speechyt/toggle_recording.sh  # Change model
+nano /home/sho/Documents/dev-projects/speechyt/toggle_recording.sh  # Change model line 46
+
+# Full reset (if everything breaks)
+cd /home/sho/Documents/dev-projects/speechyt && bash ./reset-speechyt.sh
 ```

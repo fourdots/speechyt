@@ -1,0 +1,31 @@
+# SpeechyT Custom Dictionary
+# Format: wrong_spelling → correct_spelling
+# One replacement per line
+# Lines starting with # are comments
+
+# Project names (examples)
+speechyt → SpeechyT
+myproject → MyProject
+companyname → CompanyName
+
+# Technical terms (examples)
+javascript → JavaScript
+typescript → TypeScript
+postgresql → PostgreSQL
+kubernetes → Kubernetes
+mongodb → MongoDB
+graphql → GraphQL
+
+# Brand names (examples)
+github → GitHub
+gitlab → GitLab
+openai → OpenAI
+
+# Common corrections
+cant → can't
+dont → don't
+wont → won't
+youre → you're
+its → it's
+
+# Add your own custom terms below:

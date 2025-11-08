@@ -92,10 +92,7 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
                 ACTIVE_WINDOW=$(cat "$HOME/Documents/dev-projects/speechyt/tmp/target_window_id" 2>/dev/null)
                 
                 # Copy transcription to clipboard
-                xclip -selection clipboard < $TRANSCRIPTION_FILE
-                
-                # Notify completion
-                notify-send "✅ Transcription Complete" "Text pasted!" -t 1000
+                xclip -selection clipboard < "$TRANSCRIPTION_FILE"
                 
                 # Minimal delay for clipboard to settle (GPU is fast!)
                 sleep 0.1

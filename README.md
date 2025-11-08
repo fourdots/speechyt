@@ -103,6 +103,9 @@ xbindkeys
 Add technical terms, company names, and custom words:
 
 ```bash
+# Create your personal dictionary from the example
+cp ~/speechyt/dictionary.txt.example ~/speechyt/dictionary.txt
+
 # Edit dictionary
 nano ~/speechyt/dictionary.txt
 
@@ -111,6 +114,8 @@ kubernetes → Kubernetes
 postgresql → PostgreSQL
 mycompany → MyCompany
 ```
+
+**Note:** Your `dictionary.txt` is excluded from git to keep your personal terms private.
 
 **Import from Wispr Flow (Mac):**
 ```bash

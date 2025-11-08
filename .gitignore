@@ -24,6 +24,9 @@ env_sandbox/
 *.txt
 recording.txt
 
+# User's personal dictionary (never commit this - contains personal terms)
+dictionary.txt
+
 # System files
 .DS_Store
 Thumbs.db
