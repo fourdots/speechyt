@@ -68,6 +68,27 @@ cd /home/sho/Documents/dev-projects/speechyt && bash ./view-history.sh --copy 5
 rm /home/sho/Documents/dev-projects/speechyt/history/*.txt
 ```
 
+## 🎙️ Audio Archive Management
+
+```bash
+# View all archived recordings
+./manage-audio-archive.sh list
+
+# Show statistics (count and size)
+./manage-audio-archive.sh count
+
+# Delete recordings older than 30 days
+./manage-audio-archive.sh old 30
+
+# Export all recordings to Desktop
+./manage-audio-archive.sh export
+
+# Clean all archived recordings (WARNING: deletes everything)
+./manage-audio-archive.sh clean
+```
+
+**Note:** All recordings are automatically archived to `audio_archive/` with timestamps for model training.
+
 ## 🔧 Troubleshooting
 
 ```bash

@@ -109,6 +109,16 @@ ln -sf "$SCRIPT_DIR" "$HOME_DIR/speechyt"
 echo "✅ Created symlink at ~/speechyt"
 
 echo ""
+echo "⚙️  Creating configuration file..."
+if [ ! -f "$SCRIPT_DIR/speechyt.conf" ]; then
+    cp "$SCRIPT_DIR/speechyt.conf.example" "$SCRIPT_DIR/speechyt.conf"
+    echo "✅ Created speechyt.conf from example"
+    echo "   Edit ~/speechyt/speechyt.conf to customize for your project"
+else
+    echo "ℹ️  speechyt.conf already exists"
+fi
+
+echo ""
 echo "🎉 Installation complete!"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

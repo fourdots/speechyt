@@ -9,6 +9,9 @@ last_tap_time
 *.mp3
 *.m4a
 
+# Audio archive (personal recordings for training)
+audio_archive/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -26,6 +29,9 @@ recording.txt
 
 # User's personal dictionary (never commit this - contains personal terms)
 dictionary.txt
+
+# User's personal configuration (contains project-specific context)
+speechyt.conf
 
 # System files
 .DS_Store

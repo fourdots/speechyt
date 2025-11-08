@@ -98,6 +98,23 @@ xbindkeys
 
 ## ⚙️ Configuration Options
 
+### Customize Base Context (Recommended)
+
+Tell SpeechyT about your project for better accuracy:
+
+```bash
+# Create your personal config from the example
+cp ~/speechyt/speechyt.conf.example ~/speechyt/speechyt.conf
+
+# Edit with your project details
+nano ~/speechyt/speechyt.conf
+
+# Example: Change BASE_CONTEXT to describe your tech stack
+BASE_CONTEXT="E-commerce platform using Django, PostgreSQL, Redis. Payment via Stripe."
+```
+
+**Note:** Your `speechyt.conf` is excluded from git to keep your project details private.
+
 ### Custom Dictionary
 
 Add technical terms, company names, and custom words:
@@ -119,7 +136,7 @@ mycompany → MyCompany
 
 **Import from Wispr Flow (Mac):**
 ```bash
-~/speechyt/import-dictionary.sh ~/Downloads/wispr-dictionary.json
+~/speechyt/scripts/import-dictionary.sh ~/Downloads/wispr-dictionary.json
 ```
 
 Supports: JSON, CSV, TXT formats
@@ -128,10 +145,10 @@ Supports: JSON, CSV, TXT formats
 
 ```bash
 # View recent transcriptions
-~/speechyt/view-history.sh
+~/speechyt/scripts/view-history.sh
 
 # Copy specific transcription to clipboard
-~/speechyt/view-history.sh --copy 1
+~/speechyt/scripts/view-history.sh --copy 1
 ```
 
 Automatically saves last 20 transcriptions with timestamps.

@@ -27,8 +27,33 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
             # Set library path for cuDNN (required for GPU)
             export LD_LIBRARY_PATH=$HOME/env_sandbox/lib/python3.13/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
             
-            # Initial prompt helps Whisper recognize technical terms
-            INITIAL_PROMPT="Technical terms: SpeechyT, Fantom, fantomWorks, OctoBrowser, Supabase, ScrapingBee, AdsPower, FireSearch, Windsurf, OpenMemory, Crawl4AI, Pinecone, BullMQ, Claude, OpenAI, OAuth, AHREFS, Cline, Radomir Basta, Four Dots, fourdots.com"
+            # Build context-aware initial prompt for better accuracy
+            build_initial_prompt() {
+                # Load base context from config file
+                local CONFIG_FILE="$HOME/Documents/dev-projects/speechyt/speechyt.conf"
+                local BASE_CONTEXT="Software development project"  # Default fallback
+                
+                if [ -f "$CONFIG_FILE" ]; then
+                    BASE_CONTEXT=$(grep "^BASE_CONTEXT=" "$CONFIG_FILE" | cut -d'"' -f2)
+                fi
+                
+                # Try to get context from last transcription
+                local LAST_TRANSCRIPT=$(ls -t "$HOME/Documents/dev-projects/speechyt/history/"*.txt 2>/dev/null | head -n 1)
+                
+                if [ -f "$LAST_TRANSCRIPT" ]; then
+                    # Prioritize previous message - use up to 500 chars for conversation continuity
+                    local RECENT_CONTEXT=$(tail -c 500 "$LAST_TRANSCRIPT" | tr '\n' ' ')
+                    
+                    # Combine with base context from config
+                    echo "Previous: ${RECENT_CONTEXT} Context: ${BASE_CONTEXT}"
+                else
+                    # Fallback: just base context from config
+                    echo "${BASE_CONTEXT}"
+                fi
+            }
+            
+            # Generate prompt (truncate to ~800 chars, ~200 tokens, safely under Whisper's 224 token limit)
+            INITIAL_PROMPT=$(build_initial_prompt | head -c 800)
             
             # Auto-detect GPU availability
             if command -v nvidia-smi &> /dev/null && nvidia-smi &> /dev/null; then
@@ -79,14 +104,25 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
                     done < "$HOME/Documents/dev-projects/speechyt/dictionary.txt"
                 fi
                 
-                # Save to history (last 20 transcriptions)
+                # Create timestamp for this recording (used for both history and archive)
+                TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+                
+                # Save to history (last 20 transcriptions for quick access)
                 HISTORY_DIR="$HOME/Documents/dev-projects/speechyt/history"
                 mkdir -p "$HISTORY_DIR"
-                TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
                 cp "$TRANSCRIPTION_FILE" "$HISTORY_DIR/${TIMESTAMP}.txt"
                 
-                # Keep only last 20 files
+                # Keep only last 20 files in history
                 ls -t "$HISTORY_DIR"/*.txt 2>/dev/null | tail -n +21 | xargs -r rm
+                
+                # Archive for training (audio + transcription paired with same timestamp)
+                AUDIO_ARCHIVE="$HOME/Documents/dev-projects/speechyt/audio_archive"
+                mkdir -p "$AUDIO_ARCHIVE"
+                
+                # Save transcription to archive (paired with audio)
+                cp "$TRANSCRIPTION_FILE" "$AUDIO_ARCHIVE/${TIMESTAMP}.txt"
+                
+                # Archive audio file (will be saved later with same timestamp)
                 
                 # Get the target window ID that was saved when recording started
                 ACTIVE_WINDOW=$(cat "$HOME/Documents/dev-projects/speechyt/tmp/target_window_id" 2>/dev/null)
@@ -112,8 +148,15 @@ if [ -f "$LOCKFILE" ] && [ -f "$PID_FILE" ]; then
             notify-send "⚠️ Recording Failed" "No audio was recorded"
         fi
         
-        # Clean up
-        rm -rf $HOME/Documents/dev-projects/speechyt/tmp/
+        # Archive audio file with same timestamp as transcription (already saved above)
+        if [ -f "$HOME/Documents/dev-projects/speechyt/tmp/recording.wav" ] && [ ! -z "$TIMESTAMP" ]; then
+            mv "$HOME/Documents/dev-projects/speechyt/tmp/recording.wav" "$AUDIO_ARCHIVE/${TIMESTAMP}.wav"
+        fi
+        
+        # Clean up only temporary files (keep audio in archive)
+        rm -f "$HOME/Documents/dev-projects/speechyt/tmp/"*.txt
+        rm -f "$HOME/Documents/dev-projects/speechyt/tmp/target_window_id"
+        rm -f "$HOME/Documents/dev-projects/speechyt/tmp/recording_pid"
         rm -f "$LOCKFILE"
     fi
 else

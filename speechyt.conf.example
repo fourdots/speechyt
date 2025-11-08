@@ -1,0 +1,12 @@
+# SpeechyT Configuration
+# Copy this to speechyt.conf and customize for your project
+
+# Base context prompt - describe your project/tech stack
+# This helps Whisper recognize your specific technical terms
+# Keep it under 200 characters for best results
+BASE_CONTEXT="Your project description here. Include key technologies, tools, company names, and technical terms you frequently use."
+
+# Examples:
+# BASE_CONTEXT="E-commerce platform using Django, PostgreSQL, Redis, Celery. Payment integration with Stripe. AWS deployment."
+# BASE_CONTEXT="Mobile app development with React Native, Firebase, GraphQL. Client: Acme Corp."
+# BASE_CONTEXT="Data pipeline using Apache Airflow, Spark, Kafka. ML models with TensorFlow and scikit-learn."
